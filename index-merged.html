@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed Ali Khan | AI & Deep Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Bebas+Neue&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+
+    /* ================================================================
+       DOC 2 STRUCTURE + DOC 1 RISOGRAPH COLOR THEORY
+       ================================================================
+       PALETTE (from Doc 1 — 60/30/10 Risograph):
+
+       60% — #F5F0E8  warm off-white (paper)     → body bg, cards, hero
+       30% — #7A9E8E  muted sage green            → nav, research section,
+                      + #4A6E5E dark sage           footer, structural panels
+                      + #B8D0C4 light sage          badges, meta, rings
+        5% — #C4521A  burnt sienna orange         → CTAs, border-left accents,
+                      + #E8845A sienna-light         hover states
+        5% — #2B2118  deep espresso ink           → all borders, shadows, text
+
+       THEORY RULES:
+       - Paper (#F5F0E8) is the dominant canvas — body, cards, hero bg
+       - Sage mid (#7A9E8E) structures sections — nav, dark panels, research
+       - Sage dark (#4A6E5E) for deepest structural elements — nav bg, headings
+       - Sienna (#C4521A) only on CTAs, key borders, accents — never overused
+       - Ink (#2B2118) for all outlines, shadows, text — warm not cold black
+       - Doc 2's animations, layout, fonts, HTML all stay identical
+    ================================================================ */
+
+    :root {
+        /* Doc 1 Risograph palette — exactly */
+        --sage-light:    #B8D0C4;
+        --sage-mid:      #7A9E8E;
+        --sage-dark:     #4A6E5E;
+        --sienna:        #C4521A;
+        --sienna-light:  #E8845A;
+        --paper:         #F5F0E8;
+        --paper-warm:    #EDE5D4;
+        --paper-card:    #FAF7F2;
+        --ink:           #2B2118;
+        --ink-soft:      #4A3828;
+
+        /* Doc 2 structure tokens — remapped to Doc 1 colors */
+        --yellow:        var(--paper);          /* hero bg */
+        --yellow-dim:    var(--paper-warm);
+        --magenta:       var(--sage-mid);       /* accent role */
+        --magenta-dim:   var(--sage-dark);
+        --black:         var(--ink);            /* all borders/shadows */
+        --white:         var(--paper-card);     /* card/bubble surfaces */
+        --offwhite:      var(--paper);
+        --grey-panel:    var(--sage-dark);      /* research dark panel */
+
+        /* borders — ink colored, not black */
+        --border:        3px solid var(--ink);
+        --border-thick:  4px solid var(--ink);
+        --radius:        14px;
+        --radius-lg:     22px;
+
+        /* risograph offset shadows — warm ink, not cold black */
+        --s1: 4px 4px 0 var(--ink);
+        --s2: 5px 5px 0 var(--ink);
+        --s3: 8px 8px 0 var(--ink);
+        --sm: 3px 3px 0 var(--ink);
+
+        --font-display: 'Bebas Neue', cursive;
+        --font-head:    'Black Han Sans', sans-serif;
+        --font-body:    'Nunito', sans-serif;
+        --ease:         cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: var(--font-body);
+        background-color: var(--paper);
+        color: var(--ink);
+        line-height: 1.65;
+        overflow-x: hidden;
+        /* Doc 1 risograph grain + dot texture */
+        background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E"),
+            radial-gradient(circle, rgba(122,158,142,.06) 1px, transparent 1px);
+        background-size: 200px 200px, 20px 20px;
+    }
+
+    /* ── LINKS ── */
+    a {
+        color: var(--sage-dark);
+        font-weight: 800;
+        text-decoration: underline 2px dotted var(--sage-mid);
+        transition: all .15s var(--ease);
+    }
+    a:hover {
+        color: var(--sienna);
+        text-decoration: underline 2px solid var(--sienna);
+        background: none;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    h1 { font-family: var(--font-display); letter-spacing: 3px; line-height: 1; color: var(--ink); }
+    h2 { font-family: var(--font-display); letter-spacing: 2px; line-height: 1.1; color: var(--ink); }
+    h3 { font-family: var(--font-head); letter-spacing: 1px; line-height: 1.2; color: var(--ink); }
+    h4 { font-family: var(--font-body); font-weight: 900; color: var(--ink-soft); }
+    p  { font-size: 1rem; color: var(--ink-soft); }
+    strong { color: var(--sage-dark); font-weight: 900; }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
+
+    /* ================================================================
+       KEYFRAME ANIMATIONS — Doc 2 (unchanged)
+    ================================================================ */
+    @keyframes wiggle {
+        0%,100% { transform: rotate(-1.5deg); }
+        50%      { transform: rotate(1.5deg); }
+    }
+    @keyframes float {
+        0%,100% { transform: translateY(0); }
+        50%      { transform: translateY(-10px); }
+    }
+    @keyframes slideDown {
+        from { opacity:0; transform:translateY(-18px); }
+        to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes popIn {
+        0%   { opacity:0; transform:scale(.88) rotate(-2deg); }
+        70%  { transform:scale(1.04) rotate(.5deg); }
+        100% { opacity:1; transform:scale(1) rotate(0deg); }
+    }
+    @keyframes scanline {
+        0%   { transform: translateY(-100%); }
+        100% { transform: translateY(100vh); }
+    }
+    @keyframes stampIn {
+        0%   { opacity:0; transform:scale(1.3) rotate(-4deg); }
+        60%  { transform:scale(.96) rotate(.8deg); }
+        100% { opacity:1; transform:scale(1) rotate(0); }
+    }
+
+    /* ================================================================
+       HEADER / NAV — Doc 2 structure, Doc 1 colors
+    ================================================================ */
+    header {
+        background: var(--sage-dark);           /* Doc 1: dark sage nav bg */
+        border-bottom: 4px solid var(--ink);
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        /* Doc 1: sienna misprint shadow */
+        box-shadow: 0 4px 0 var(--sienna), 0 7px 0 var(--ink);
+        animation: slideDown .4s var(--ease) both;
+    }
+
+    .nav-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem clamp(16px, 4vw, 32px);
+        gap: 1rem;
+    }
+
+    .logo {
+        font-family: var(--font-display);
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        letter-spacing: 3px;
+        color: var(--paper);                    /* Doc 1: paper on dark nav */
+        /* Doc 1: risograph double-print */
+        text-shadow: 2px 2px 0 var(--sienna), 4px 4px 0 var(--ink);
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    nav ul {
+        display: flex;
+        gap: clamp(0.5rem, 2vw, 1.8rem);
+        list-style: none;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    nav a {
+        font-family: var(--font-body);
+        font-weight: 900;
+        font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--sage-light);               /* Doc 1: light sage on dark nav */
+        text-decoration: none;
+        padding: 0.3rem 0.75rem;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        background: transparent;
+        transition: all .15s var(--ease);
+    }
+    nav a:hover, nav a.active {
+        color: var(--ink);
+        background: var(--paper);               /* Doc 1: paper hover bg */
+        border-color: var(--sienna);
+        transform: translateY(-2px) rotate(-1deg);
+        box-shadow: 2px 2px 0 var(--sienna);
+    }
+
+    /* hamburger */
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 6px;
+        border: 2px solid var(--sage-light);
+        border-radius: 8px;
+        background: transparent;
+        flex-shrink: 0;
+    }
+    .hamburger span {
+        display: block;
+        width: 22px; height: 3px;
+        background: var(--sage-light);
+        border-radius: 2px;
+        transition: all .2s var(--ease);
+    }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    /* mobile nav drawer */
+    .mobile-nav {
+        display: none;
+        flex-direction: column;
+        background: var(--sage-dark);
+        border-top: 3px solid var(--sienna);
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height .3s var(--ease);
+    }
+    .mobile-nav.open { max-height: 300px; }
+    .mobile-nav a {
+        color: var(--sage-light);
+        font-family: var(--font-body);
+        font-weight: 900;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 0.9rem clamp(16px,4vw,32px);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(43,33,24,.2);
+        background: transparent;
+        transition: all .15s var(--ease);
+    }
+    .mobile-nav a:hover {
+        background: var(--paper);
+        color: var(--ink);
+        padding-left: calc(clamp(16px,4vw,32px) + 8px);
+    }
+
+    /* ================================================================
+       HERO — Doc 2 structure, Doc 1 colors
+    ================================================================ */
+    .hero {
+        background: var(--paper-warm);          /* Doc 1: warm paper hero bg */
+        border-bottom: var(--border-thick);
+        padding: clamp(3rem, 8vw, 5rem) 0 clamp(2.5rem, 6vw, 4rem);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Doc 1: halftone dots top-right */
+    .hero::before {
+        content: 'AI';
+        position: absolute;
+        bottom: -30px; right: -10px;
+        font-family: var(--font-display);
+        font-size: clamp(12rem, 30vw, 22rem);
+        color: rgba(43,33,24,.04);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* Doc 1: risograph speed lines */
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            -52deg,
+            transparent,
+            transparent 28px,
+            rgba(122,158,142,.07) 28px,
+            rgba(122,158,142,.07) 29px
+        );
+        pointer-events: none;
+    }
+
+    .hero-layout {
+        display: flex;
+        gap: clamp(2rem, 5vw, 4rem);
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-text { flex: 1 1 340px; min-width: 0; }
+
+    /* Doc 2: POW badge — Doc 1: sienna color */
+    .hero-text::before {
+        content: 'POW!';
+        font-family: var(--font-display);
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        letter-spacing: 2px;
+        background: var(--sienna);              /* Doc 1: sienna accent */
+        color: var(--paper);
+        padding: 0.25rem 1rem;
+        border-radius: 40px;
+        border: var(--border);
+        box-shadow: var(--sm);
+        display: inline-block;
+        margin-bottom: 0.8rem;
+        animation: wiggle 2s ease-in-out infinite;
+        transform-origin: center;
+    }
+
+    .hero-text h1 {
+        font-size: clamp(2.8rem, 8vw, 5.5rem);
+        color: var(--ink);
+        /* Doc 1: risograph double-print — sage then ink */
+        text-shadow: 3px 3px 0 var(--sage-mid), 6px 6px 0 var(--ink);
+        margin-bottom: 1rem;
+        animation: stampIn .5s var(--ease) .1s both;
+    }
+
+    /* speech bubble */
+    .intro {
+        background: var(--paper-card);          /* Doc 1: paper-card surface */
+        border: var(--border-thick);
+        border-left: 6px solid var(--sage-mid); /* Doc 1: sage left stripe */
+        border-radius: var(--radius);
+        padding: 1.2rem 1.5rem;
+        box-shadow: var(--s2);
+        position: relative;
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        animation: popIn .45s var(--ease) .25s both;
+    }
+    .intro::before {
+        content: '';
+        position: absolute;
+        bottom: -20px; left: 44px;
+        border: 10px solid transparent;
+        border-top-color: var(--ink);
+    }
+    .intro::after {
+        content: '';
+        position: absolute;
+        bottom: -14px; left: 47px;
+        border: 7px solid transparent;
+        border-top-color: var(--paper-card);
+    }
+    .intro p { color: var(--ink-soft); }
+    .intro strong { color: var(--sienna); }     /* Doc 1: sienna for strong */
+
+    /* stat pill */
+    .hero-stat {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.4rem;
+        font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+        font-weight: 800;
+        background: var(--sage-light);          /* Doc 1: sage-light pill */
+        color: var(--ink-soft);
+        padding: 0.4rem 1.2rem;
+        border-radius: 40px;
+        border: var(--border);
+        box-shadow: var(--sm);
+        letter-spacing: 0.3px;
+        flex-wrap: wrap;
+    }
+
+    /* CTA */
+    .btn {
+        font-family: var(--font-body);
+        font-weight: 900;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: var(--sienna);              /* Doc 1: sienna CTA */
+        color: var(--paper) !important;
+        padding: 0.8rem 2.2rem;
+        border-radius: 40px;
+        text-decoration: none !important;
+        display: inline-block;
+        margin-top: 1.4rem;
+        border: var(--border-thick);
+        box-shadow: var(--s2);
+        transition: all .15s var(--ease);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn::after {
+        content: '→';
+        margin-left: 6px;
+        transition: transform .15s var(--ease);
+        display: inline-block;
+    }
+    .btn:hover {
+        background: var(--paper);
+        color: var(--ink) !important;
+        transform: translate(-3px,-3px);
+        box-shadow: var(--s3);
+    }
+    .btn:hover::after { transform: translateX(4px); }
+
+    /* ── HERO IMAGE ── */
+    .hero-image {
+        flex: 0 1 360px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: popIn .55s var(--ease) .15s both;
+    }
+
+    .hero-img-wrap {
+        position: relative;
+        display: inline-block;
+    }
+    /* Doc 1: sage starburst */
+    .hero-img-wrap::before {
+        content: '';
+        position: absolute;
+        inset: -20px;
+        background: conic-gradient(
+            from 0deg,
+            var(--sage-mid) 0deg 20deg, transparent 20deg 40deg,
+            var(--sage-mid) 40deg 60deg, transparent 60deg 80deg,
+            var(--sage-mid) 80deg 100deg, transparent 100deg 120deg,
+            var(--sage-mid) 120deg 140deg, transparent 140deg 160deg,
+            var(--sage-mid) 160deg 180deg, transparent 180deg 200deg,
+            var(--sage-mid) 200deg 220deg, transparent 220deg 240deg,
+            var(--sage-mid) 240deg 260deg, transparent 260deg 280deg,
+            var(--sage-mid) 280deg 300deg, transparent 300deg 320deg,
+            var(--sage-mid) 320deg 340deg, transparent 340deg 360deg
+        );
+        border-radius: 50%;
+        opacity: .18;
+        animation: wiggle 4s ease-in-out infinite;
+        z-index: 0;
+    }
+
+    .hero-image img {
+        width: clamp(220px, 35vw, 360px);
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        object-position: center 25%;
+        border-radius: 35% 65% 45% 55% / 55% 45% 65% 35%;
+        border: 5px solid var(--ink);
+        /* Doc 1: layered sage ring */
+        box-shadow:
+            0 0 0 8px var(--sage-light),
+            0 0 0 11px var(--ink),
+            var(--s3);
+        background: var(--sage-light);
+        display: block;
+        position: relative;
+        z-index: 1;
+        animation: float 4s ease-in-out infinite;
+        transition: box-shadow .2s var(--ease), border-radius .3s var(--ease);
+        filter: sepia(8%) contrast(1.05);       /* Doc 1: slight sepia */
+    }
+    .hero-image img:hover {
+        border-radius: 50%;
+        box-shadow:
+            0 0 0 10px var(--sienna-light),
+            0 0 0 13px var(--ink),
+            10px 10px 0 13px var(--ink);
+        animation-play-state: paused;
+    }
+
+    /* ================================================================
+       SECTIONS — SHARED
+    ================================================================ */
+    section { padding: clamp(2.5rem, 6vw, 4rem) 0; }
+
+    section h2 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        color: var(--ink);
+        margin-bottom: 1.5rem;
+        display: inline-block;
+        position: relative;
+        padding-bottom: 6px;
+        /* Doc 1: risograph double shadow */
+        text-shadow: 2px 2px 0 var(--sage-light), 4px 4px 0 var(--ink);
+    }
+    section h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0;
+        height: 5px;
+        width: 100%;
+        background: var(--sienna);             /* Doc 1: sienna underline */
+        border-radius: 3px;
+        box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    /* ================================================================
+       RESEARCH SECTION — Doc 1: sage-mid dominant panel
+    ================================================================ */
+    .research {
+        background: var(--sage-mid);            /* Doc 1: sage-mid section */
+        border-top: var(--border-thick);
+        border-bottom: var(--border-thick);
+        position: relative;
+        overflow: hidden;
+    }
+    /* Doc 1: halftone overlay */
+    .research::before {
+        content: '';
+        position: absolute;
+        left: 0; right: 0;
+        height: 60px;
+        background-image: radial-gradient(circle, rgba(245,240,232,.12) 1.5px, transparent 1.5px);
+        background-size: 14px 14px;
+        animation: scanline 5s linear infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .research .container { position: relative; z-index: 1; }
+
+    .research h2 {
+        color: var(--paper) !important;
+        text-shadow: 2px 2px 0 var(--sage-dark), 4px 4px 0 var(--ink);
+    }
+    .research h2::after { background: var(--sienna-light); box-shadow: none; }
+    .research a { color: var(--paper); text-decoration-color: var(--sage-light); }
+    .research a:hover { color: var(--sienna-light); text-decoration: underline 2px solid var(--sienna-light); background: none; }
+
+    .content-block {
+        background: var(--paper-card);          /* Doc 1: paper card inside dark section */
+        border: var(--border-thick);
+        border-left: 8px solid var(--sage-dark);/* Doc 1: sage-dark left stripe */
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 4vw, 2.4rem);
+        box-shadow: var(--s3);
+        position: relative;
+    }
+    /* Doc 1: star chip label */
+    .content-block::before {
+        content: '★';
+        position: absolute;
+        top: -18px; left: 24px;
+        font-size: 1.1rem;
+        background: var(--sienna);
+        color: var(--paper);
+        border: var(--border);
+        border-radius: 50%;
+        width: 38px; height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--sm);
+    }
+    .content-block p { color: var(--ink-soft); margin-bottom: 1rem; }
+    .content-block p:last-child { margin-bottom: 0; }
+    .content-block strong { color: var(--sage-dark); }
+
+    /* ================================================================
+       CV / PROGRESS SECTION
+    ================================================================ */
+    #cv { background: var(--paper); }          /* Doc 1: main paper bg */
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1rem, 3vw, 1.8rem); }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px,100%), 1fr)); gap: clamp(1rem, 3vw, 1.8rem); }
+
+    /* ── CARD — Doc 1 colors ── */
+    .card {
+        background: var(--paper-card);
+        border: var(--border-thick);
+        border-radius: var(--radius);
+        padding: clamp(1.2rem, 3vw, 1.8rem);
+        box-shadow: var(--s2);
+        transition: all .15s var(--ease);
+        position: relative;
+        overflow: hidden;
+    }
+    /* Doc 1: sage top stripe */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 5px;
+        background: var(--sage-mid);
+        transition: background .15s var(--ease);
+    }
+    /* corner fold */
+    .card::after {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        border-style: solid;
+        border-width: 0 26px 26px 0;
+        border-color: transparent var(--sage-light) transparent transparent;
+        transition: all .15s var(--ease);
+    }
+    .card:hover {
+        transform: translate(-4px,-4px);
+        box-shadow: 9px 9px 0 var(--ink);
+        border-color: var(--sienna);
+    }
+    .card:hover::before { background: var(--sienna); }
+    .card:hover::after { border-color: transparent var(--sienna-light) transparent transparent; }
+
+    .card h3 {
+        font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+        margin-bottom: 0.6rem;
+        color: var(--ink);
+    }
+
+    .meta {
+        font-size: clamp(0.78rem, 1.8vw, 0.88rem);
+        font-weight: 800;
+        color: var(--sage-dark);                /* Doc 1: sage dark meta text */
+        border-left: 4px solid var(--sienna);
+        padding: 0.2rem 0.75rem;
+        background: var(--paper-warm);
+        border-radius: 0 8px 8px 0;
+        display: inline-block;
+        margin-bottom: 0.8rem;
+    }
+
+    /* ── BADGES — Doc 1 colors ── */
+    .badge {
+        background: var(--sage-light);          /* Doc 1: sage-light badge */
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 0.7rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.15rem 0.75rem;
+        border-radius: 40px;
+        display: inline-block;
+        margin: 0.2rem 0.2rem 0 0;
+        border: 2px solid var(--ink);
+        box-shadow: var(--sm);
+        transition: all .15s var(--ease);
+        cursor: default;
+    }
+    .badge:hover {
+        background: var(--sienna);
+        color: var(--paper);
+        transform: translateY(-2px) rotate(-1deg);
+        box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .btn-small {
+        display: inline-block;
+        background: var(--paper-warm);
+        border: 2px solid var(--sage-dark);
+        border-radius: 40px;
+        padding: 0.15rem 0.9rem;
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-decoration: none !important;
+        color: var(--sage-dark) !important;
+        margin-left: 0.6rem;
+        box-shadow: var(--sm);
+        transition: all .15s var(--ease);
+    }
+    .btn-small:hover {
+        background: var(--sienna);
+        color: var(--paper) !important;
+        border-color: var(--ink);
+        transform: translate(-1px,-1px);
+        box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    /* projects heading */
+    .projects-heading {
+        font-family: var(--font-display);
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        letter-spacing: 2px;
+        margin: clamp(1.5rem, 4vw, 2.5rem) 0 1.2rem;
+        color: var(--ink);
+        display: inline-block;
+        padding-bottom: 6px;
+        border-bottom: 3px dashed var(--sage-mid); /* Doc 1: dashed sage */
+        position: relative;
+        text-shadow: 2px 2px 0 var(--sage-light), 4px 4px 0 var(--ink);
+    }
+    .projects-heading::after {
+        content: '⚡';
+        margin-left: 0.5rem;
+        font-size: 1.3rem;
+        animation: wiggle 1.5s ease-in-out infinite;
+        display: inline-block;
+    }
+
+    /* outline btn */
+    .btn-outline {
+        background: transparent !important;
+        color: var(--ink) !important;
+        border: var(--border-thick) !important;
+        box-shadow: var(--s2) !important;
+    }
+    .btn-outline::after { content: '↓'; }
+    .btn-outline:hover {
+        background: var(--sage-light) !important; /* Doc 1: sage hover */
+        color: var(--ink) !important;
+        transform: translate(-3px,-3px);
+        box-shadow: var(--s3) !important;
+    }
+
+    hr { border: 2px dashed var(--sage-light); margin: 1.5rem 0; }
+
+    /* ================================================================
+       PUBLICATIONS SECTION — Doc 1: paper-warm alternate bg
+    ================================================================ */
+    #publications {
+        background: var(--paper-warm);          /* Doc 1: warm paper alternate */
+        border-top: var(--border-thick);
+        border-bottom: var(--border-thick);
+        position: relative;
+        overflow: hidden;
+    }
+    #publications::before {
+        content: 'POW';
+        position: absolute;
+        right: -30px; bottom: -30px;
+        font-family: var(--font-display);
+        font-size: clamp(8rem, 18vw, 14rem);
+        color: rgba(43,33,24,.04);
+        line-height: 1;
+        pointer-events: none;
+    }
+    #publications h2 {
+        color: var(--ink);
+    }
+    #publications h2::after { background: var(--sienna); }
+
+    .publication-item {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.2rem;
+        border-bottom: 2px dashed var(--sage-light);
+    }
+    .publication-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    .pub-title  { font-weight: 900; font-size: clamp(1rem, 2vw, 1.08rem); color: var(--ink); }
+    .pub-venue  { font-style: italic; color: var(--sage-dark); font-weight: 800; }
+
+    /* publications content block on warm bg */
+    #publications .content-block {
+        background: var(--paper-card);
+        border-color: var(--ink);
+        box-shadow: var(--s3);
+    }
+    #publications .content-block p { color: var(--ink-soft); }
+    #publications .content-block::before {
+        content: '★';
+        background: var(--sienna);
+        color: var(--paper);
+    }
+
+    /* ================================================================
+       FOOTER — Doc 1: ink dark footer
+    ================================================================ */
+    footer {
+        background: var(--ink);                 /* Doc 1: ink dark footer */
+        border-top: 3px solid var(--sienna);
+        /* Doc 1: risograph double rule */
+        box-shadow: 0 -5px 0 var(--sage-mid), 0 -8px 0 var(--ink);
+        padding: clamp(2rem, 5vw, 3rem) 0 1.5rem;
+        margin-top: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    footer::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 40px,
+            rgba(122,158,142,.04) 40px,
+            rgba(122,158,142,.04) 41px
+        );
+        pointer-events: none;
+    }
+
+    .footer-content { text-align: center; position: relative; z-index: 1; }
+
+    footer h3 {
+        font-family: var(--font-display) !important;
+        font-size: clamp(1.5rem, 4vw, 2.2rem) !important;
+        letter-spacing: 2.5px;
+        color: var(--paper) !important;
+        text-shadow: 2px 2px 0 var(--sage-mid), 4px 4px 0 var(--sienna);
+    }
+
+    .social-links {
+        margin: 1.6rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.6rem;
+    }
+    .social-links a {
+        color: var(--paper) !important;
+        font-family: var(--font-body);
+        font-weight: 900;
+        font-size: clamp(0.78rem, 2vw, 0.88rem);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        text-decoration: none !important;
+        padding: 0.45rem 1.3rem;
+        border: 2px solid var(--sage-mid);
+        border-radius: 40px;
+        display: inline-block;
+        background: transparent;
+        transition: all .15s var(--ease);
+        box-shadow: 3px 3px 0 var(--sage-mid);
+    }
+    .social-links a:hover {
+        background: var(--sienna);
+        border-color: var(--sienna-light);
+        color: var(--paper) !important;
+        transform: translate(-2px,-2px) rotate(-1deg);
+        box-shadow: 5px 5px 0 var(--sienna);
+    }
+
+    footer p { color: var(--sage-light) !important; font-size: 0.9rem; margin-top: 0.5rem; }
+    .copyright { opacity: 0.5; font-size: 0.82rem !important; color: var(--paper) !important; }
+
+    /* ================================================================
+       FULL RESPONSIVE — Doc 2 (unchanged)
+    ================================================================ */
+    @media (max-width: 1199px) {
+        .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 991px) {
+        .hero-layout { flex-direction: column-reverse; text-align: center; gap: 2rem; }
+        .hero-text { flex: 1 1 100%; }
+        .hero-text::before { display: inline-block; }
+        .hero-text h1 { font-size: clamp(2.8rem, 10vw, 4.5rem); }
+        .hero-image { flex: 1 1 100%; }
+        .intro::before, .intro::after { display: none; }
+        .intro { text-align: left; }
+        .hero-stat { justify-content: center; }
+        .grid-2 { grid-template-columns: 1fr; }
+        .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        section h2 { font-size: clamp(1.6rem, 5vw, 2.4rem); }
+    }
+
+    @media (max-width: 767px) {
+        .hamburger { display: flex; }
+        nav ul { display: none; }
+        .mobile-nav { display: flex; }
+        .hero { padding: 2.5rem 0 2rem; }
+        .hero-image img { width: clamp(180px, 55vw, 260px); }
+        .grid-3 { grid-template-columns: 1fr; }
+        .card { padding: 1.2rem; }
+        .btn { padding: 0.7rem 1.6rem; font-size: 0.85rem; }
+        .social-links a { padding: 0.4rem 1rem; font-size: 0.8rem; }
+        .projects-heading { font-size: 1.6rem; }
+        section { padding: 2rem 0; }
+    }
+
+    @media (max-width: 575px) {
+        .logo { font-size: 1.2rem; letter-spacing: 2px; }
+        .hero-text h1 { font-size: clamp(2.2rem, 12vw, 3.2rem); }
+        .intro { font-size: 0.9rem; padding: 1rem 1.1rem; }
+        .hero-stat { font-size: 0.75rem; padding: 0.35rem 0.9rem; }
+        section h2 { font-size: 1.6rem; }
+        section h2::after { height: 4px; }
+        .content-block { padding: 1.4rem 1.2rem; }
+        .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
+        .card { border-radius: 10px; }
+        .card h3 { font-size: 1.1rem; }
+        .badge { font-size: 0.65rem; padding: 0.1rem 0.6rem; }
+        footer h3 { font-size: 1.4rem !important; }
+        .social-links { gap: 0.4rem; }
+        .social-links a { padding: 0.35rem 0.85rem; font-size: 0.75rem; }
+        .btn { width: 100%; text-align: center; }
+        .hero-img-wrap::before { inset: -10px; }
+    }
+
+    @media (max-width: 380px) {
+        .nav-container { padding: 0.6rem 12px; }
+        .container { padding: 0 12px; }
+        .hero-text h1 { font-size: 2rem; }
+        .logo { font-size: 1rem; }
+    }
+
+    @media print {
+        header { position: static; box-shadow: none; }
+        .hero::before, .hero::after, .research::before { display: none; }
+        .card { box-shadow: 0 0 0 1px #ccc; }
+        .btn { border: 2px solid var(--ink); }
+        footer { background: var(--paper); }
+        footer h3 { color: var(--ink) !important; text-shadow: none; }
+        .social-links a { border-color: var(--ink); background: var(--paper); color: var(--ink) !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">Mohammed Ali Khan</div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#cv">Curriculum Vitae</a></li>
+                    <li><a href="#publications">Publications</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" aria-label="Open menu" onclick="toggleMenu(this)">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#" onclick="closeMenu()">Home</a>
+            <a href="#cv" onclick="closeMenu()">Curriculum Vitae</a>
+            <a href="#publications" onclick="closeMenu()">Publications</a>
+            <a href="#contact" onclick="closeMenu()">Contact</a>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container hero-layout">
+                <div class="hero-text">
+                    <h1>About Me</h1>
+                    <div class="intro">
+                        <p>Hi, my name is <strong>Mohammed Ali Khan</strong>. I am a final-year undergraduate in Information Technology with a strong focus on Deep Learning, particularly in CNNs, sequence models, and optimization techniques.</p>
+                        <p style="margin-top:0.7rem;">I emphasize building a deep understanding by implementing neural architectures from first principles rather than relying solely on high-level libraries. I am currently seeking internship or entry-level opportunities in AI/Deep Learning, where I can contribute to real-world problems while continuing to grow as a machine learning engineer.</p>
+                    </div>
+                    <p class="hero-stat">🔹 55+ LeetCode problems · TCS NQT certified (80.31%) · DeepLearning.AI specialization</p>
+                    <a href="#research" class="btn">Learn More</a>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-img-wrap">
+                        <img src="./pic3.jpg" alt="Mohammed Ali Khan"
+                             onerror="this.src='https://via.placeholder.com/500x500?text=Ali+Khan'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESEARCH -->
+        <section id="research" class="research">
+            <div class="container">
+                <h2>My Learning</h2>
+                <div class="content-block">
+                    <p>I am a final-year IT undergraduate at <strong>Muffakham Jah College of Engineering & Technology</strong> (CGPA: 8.16/10), with a focused interest in Deep Learning and AI systems.</p>
+                    <p>My learning approach is grounded in first principles — I build and experiment with neural networks from scratch to develop a strong understanding of how models behave internally. I have worked on convolutional neural networks, LSTMs, and optimization techniques, along with implementing a binary classifier.</p>
+                    <p>Alongside this, I completed the Deep Learning Specialization (DeepLearning.AI), covering neural networks, CNNs, and sequence models (LSTM/GRU), and have explored applications ranging from deep learning systems to blockchain-based simulations.</p>
+                    <p>I am expected to graduate with a B.E. in Information Technology in 2026. I have also earned the TCS iON NQT certification (Foundation: 80.31%, Psychometric: 90%) and actively engage in technical writing — including <a href="https://medium.com/@alikhanwork649/why-lstm-works-better-than-vanilla-rnn-7e89e2bdc82d"><span style="color: green;">"Why LSTM Works Better Than Vanilla RNN"</span></a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CV -->
+        <section id="cv" style="padding: 3rem 0;">
+            <div class="container">
+                <h2>My Progress</h2>
+
+                <div class="grid-2" style="margin: 2rem 0;">
+                    <div class="card">
+                        <h3>🎓 Education</h3>
+                        <div class="meta">B.E. Information Technology · Muffakham Jah College, Hyderabad</div>
+                        <p>CGPA: 8.16/10 (after 6 semesters) · Graduation: 2026</p>
+                        <p style="margin-top:0.6rem;"><strong>Relevant coursework:</strong> Python, Data Structures, Algorithms, Machine Learning, DBMS</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚙️ Technical Skills</h3>
+                        <div style="margin-bottom:0.5rem;"><strong>Languages:</strong> Python, Java, C++, C</div>
+                        <div style="margin:0.5rem 0;"><strong>AI/ML:</strong> Neural Networks, CNNs, RNN/LSTM, optimization</div>
+                        <div style="margin-bottom:0.8rem;"><strong>Web:</strong> HTML, CSS, Node.js · <strong>DB:</strong> SQL · <strong>Tools:</strong> GitHub, Hardhat</div>
+                        <span class="badge">Python</span> <span class="badge">TensorFlow</span> <span class="badge">NumPy</span> <span class="badge">Solidity</span> <span class="badge">EJS</span>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin: 2rem 0;">
+                    <div class="card">
+                        <h3>📜 Certifications</h3>
+                        <ul style="list-style:none; padding:0;">
+                            <li style="margin-bottom:1rem;">✅ <strong>TCS ION NQT (IT)</strong> — foundation 80.31% | psychometric 90%<br>
+                                <a href="https://drive.google.com/file/d/1R3sa4NrmvqyDFIY-eX4PAsRF3c_bmjXW/view">verify certificate</a> · <a href="https://drive.google.com/file/d/1R2tC_gcNrMlLraz-EFyC7Jk_uvanQiy1/view">verify report</a> (valid till 2027)
+                            </li>
+                            <li>✅ <strong>Deep Learning Specialization</strong> – DeepLearning.AI (Coursera)
+                                <a href="https://www.coursera.org/account/accomplishments/specialization/F7QM6N1PZO5D" target="_blank" rel="noopener noreferrer" style="font-size:0.9rem; margin-left:6px;">[Verify Certificate]</a><br>
+                                <span style="font-size:0.9rem;">neural networks, CNNs, sequence models (LSTM/GRU), optimizations</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💼 Internship</h3>
+                        <h4 style="font-size:1.15rem; margin-bottom:0.3rem;">Moral Merry School · Web Developer Intern</h4>
+                        <div class="meta">built multi-page school website with maps, EJS, AI chatbot</div>
+                        <p>🔗 <a href="https://moralmerry.in" target="_blank">moralmerry.in</a> (live) · <a href="https://drive.google.com/file/d/15Z1MYnuR2DltdsoXdWO4HPaWi3-lzL6s/view?usp=sharing">view certificate</a></p>
+                        <div style="margin-top:0.8rem;">
+                            <span class="badge">Node.js</span> <span class="badge">EJS</span> <span class="badge">chatbot</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="projects-heading">🔬 Featured Projects</p>
+                <div class="grid-3">
+
+                    <div class="card">
+                        <h3>Media Bias Dataset Builder</h3>
+                        <div class="meta">Python, NLP, data pipeline</div>
+                        <p>Developed a dataset pipeline to collect and label media bias from Indian news sources using AI-assisted analysis and human validation.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">NLP</span> <span class="badge">dataset</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://media-bias-database.onrender.com" target="_blank" rel="noopener noreferrer">View Website</a></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Cat vs Non-Cat Classifier</h3>
+                        <div class="meta">Python, NumPy, from scratch</div>
+                        <p>Binary image classifier using multi-layer neural network built entirely with NumPy. Trained with gradient descent, sigmoid activations, manual forward/backward propagation.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">from scratch</span> <span class="badge">NumPy</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://github.com/MohammedAliKhan3/cat-vs-noncat-classifier" target="_blank" rel="noopener noreferrer">Github repo</a></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>StableX – Crypto Stabilizer</h3>
+                        <div class="meta">Solidity, Hardhat, Python</div>
+                        <p>Decentralized ERC-20 token simulation with a Python-based stabilization bot designed to analyze and regulate market volatility.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">blockchain</span> <span class="badge">ERC-20</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://github.com/MohammedAliKhan3/stableX-Token" target="_blank" rel="noopener noreferrer">Github repo</a></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>DAA Practice Repository</h3>
+                        <div class="meta">Python, algorithm analysis</div>
+                        <p>Implementation of classical algorithms including sorting, searching, backtracking, and dynamic programming with detailed complexity analysis.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">algorithms</span> <span class="badge">DP</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://github.com/MohammedAliKhan3/Design-Analysis-of-Algorithms" target="_blank" rel="noopener noreferrer">Explore</a></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Linear Regression from Scratch</h3>
+                        <div class="meta">Python, NumPy, optimization</div>
+                        <p>Implemented linear regression from first principles using gradient descent, including cost function derivation and parameter optimization without ML libraries.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">from scratch</span> <span class="badge">regression</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://github.com/MohammedAliKhan3/ml-models-from-scratch" target="_blank" rel="noopener noreferrer">Code</a></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Heart Disease Prediction</h3>
+                        <div class="meta">Python, ML, healthcare</div>
+                        <p>Built a predictive model using linear regression on the UCI Heart Disease dataset, focusing on feature relationships and model interpretability.</p>
+                        <div style="margin-top:0.8rem;"><span class="badge">healthcare</span> <span class="badge">ML</span></div>
+                        <div style="margin-top:0.8rem;"><a href="https://heart-prediction-frontend-4.onrender.com" target="_blank" rel="noopener noreferrer">Website</a></div>
+                    </div>
+
+                </div>
+
+                <div class="grid-2" style="margin: 2.5rem 0;">
+                    <div class="card">
+                        <h3>✍️ Technical Writing</h3>
+                        <p class="pub-title" style="font-weight:900; color:var(--ink);">Why LSTM Works Better Than Vanilla RNN <span style="font-weight:400; color:var(--ink-soft);">(Medium)</span></p>
+                        <p style="margin-top:0.5rem;">Deep-dive on vanishing gradient &amp; LSTM gates (forget/input/output). <a href="https://medium.com/@alikhanwork649/why-lstm-works-better-than-vanilla-rnn-7e89e2bdc82d">Read article</a></p>
+                    </div>
+                    <div class="card">
+                        <h3>🧩 Problem Solving</h3>
+                        <p>LeetCode: 55+ problems solved · sharpening DSA · <a href="https://leetcode.com/u/MohammedAlikhan1/">profile link</a></p>
+                        <p style="margin-top:0.5rem;">Languages: Python, C++, SQL</p>
+                    </div>
+                </div>
+
+                <div style="text-align:center; margin: 2rem 0 1rem;">
+                    <a href="./resume.pdf" download class="btn btn-outline">📄 Download full resume (PDF)</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- PUBLICATIONS -->
+        <section id="publications" style="padding: 2rem 0 3rem;">
+            <div class="container">
+                <h2>Publications &amp; Writing</h2>
+                <div class="content-block" style="margin-top:1.5rem;">
+                    <div class="publication-item">
+                        <span class="pub-title">Why LSTM Works Better Than Vanilla RNN</span>
+                        <span class="pub-venue"> – Medium, 2025</span>
+                        <a href="https://medium.com/@alikhanwork649/why-lstm-works-better-than-vanilla-rnn-7e89e2bdc82d" class="btn-small">read</a>
+                        <p style="margin-top:0.4rem;">Detailed internal architecture: forget, input, output gates; how they solve vanishing gradient and learn long-term dependencies.</p>
+                    </div>
+                    <div class="publication-item">
+                        <span class="pub-title">(Upcoming) Blog: How does CNN works?</span>
+                        <span class="pub-venue"> – in draft</span>
+                    </div>
+                </div>
+                <p style="margin-top:1rem;">Also check my <a href="https://github.com/MohammedAliKhan3">GitHub</a> for more reproducible work.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <div class="container footer-content">
+            <h3>Reach out to ME!</h3>
+            <div class="social-links">
+                <a href="https://github.com/MohammedAliKhan3" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/mohammed-ali-khan-3089a334a/">LinkedIn</a>
+                <a href="mailto:alikhanwork649@gmail.com">Email</a>
+                <a href="https://medium.com/@alikhanwork649">Medium</a>
+            </div>
+            <p>📧 alikhanwork649@gmail.com · based in Hyderabad</p>
+            <p class="copyright">&copy; 2026 Mohammed Ali Khan</p>
+        </div>
+    </footer>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script>
+        function toggleMenu(btn) {
+            btn.classList.toggle('open');
+            const nav = document.getElementById('mobileNav');
+            nav.classList.toggle('open');
+        }
+        function closeMenu() {
+            document.querySelector('.hamburger').classList.remove('open');
+            document.getElementById('mobileNav').classList.remove('open');
+        }
+        document.addEventListener('click', function(e) {
+            const header = document.querySelector('header');
+            if (!header.contains(e.target)) closeMenu();
+        });
+    </script>
+</body>
+</html>
